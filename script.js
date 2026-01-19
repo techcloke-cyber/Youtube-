@@ -280,4 +280,175 @@ document.addEventListener('DOMContentLoaded', function() {
                         resolve({
                             success: true,
                             downloadUrl: mockDownloadUrl,
-                            filename: `youtube_video_
+                            filename: `youtube_video_${Date.now()}.mp4`
+                        });
+                    }, 1000);
+                }
+                
+                // Update progress display
+                updateProgress(
+                    Math.min(progress, 99),
+                    `Downloading... ${Math.floor(progress)}%`,
+                    speed,
+                    eta
+                );
+                
+                // Randomize speed and ETA occasionally
+                if (Math.random() > 0.8) {
+                    speed = `${(Math.random() * 2 + 0.5).toFixed(1)} MB/s`;
+                    eta = `00:${Math.floor(Math.random() * 30 + 15).toString().padStart(2, '0')}`;
+                }
+                
+            }, 500);
+        });
+    }
+
+    async function tryFallbackDownload(url) {
+        // This would use a different API/service as fallback
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve({
+                    success: true,
+                    downloadUrl: `https://fallback-service.com/download/${Date.now()}`,
+                    filename: 'youtube_video.mp4'
+                });
+            }, 2000);
+        });
+    }
+
+    function updateProgress(percent, status, speed, eta) {
+        progressFill.style.width = `${percent}%`;
+        progressText.textContent = `${Math.floor(percent)}%`;
+        statusText.textContent = status;
+        speedText.textContent = `Speed: ${speed}`;
+        etaText.textContent = `ETA: ${eta}`;
+    }
+
+    function showResult(title, downloadUrl) {
+        resultMessage.textContent = `"${title}" has been converted to a single MP4 file.`;
+        downloadLink.href = downloadUrl;
+        downloadLink.download = `${title.replace(/[^\w\s]/gi, '')}.mp4`;
+        
+        progressSection.style.display = 'none';
+        resultSection.style.display = 'block';
+        
+        // Scroll to result
+        resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function cancelDownload() {
+        if (isDownloading) {
+            isDownloading = false;
+            updateProgress(0, 'Download canceled', '--', '--');
+            showNotification('Download canceled', 'info');
+            
+            setTimeout(() => {
+                progressSection.style.display = 'none';
+                downloadBtn.disabled = false;
+            }, 1500);
+        }
+    }
+
+    function resetForm() {
+        urlInput.value = '';
+        resultSection.style.display = 'none';
+        progressSection.style.display = 'none';
+        urlStatus.textContent = 'Enter a valid YouTube URL';
+        urlStatus.style.color = '#718096';
+        
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showModal(modalId) {
+        document.getElementById(modalId).style.display = 'block';
+    }
+
+    function showNotification(message, type = 'info') {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+            <span>${message}</span>
+        `;
+        
+        // Add to page
+        document.body.appendChild(notification);
+        
+        // Show with animation
+        setTimeout(() => notification.classList.add('show'), 10);
+        
+        // Remove after delay
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+        
+        // Add notification styles if not already present
+        if (!document.querySelector('#notification-styles')) {
+            const style = document.createElement('style');
+            style.id = 'notification-styles';
+            style.textContent = `
+                .notification {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    background: white;
+                    border-radius: 10px;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    z-index: 10000;
+                    transform: translateX(100%);
+                    opacity: 0;
+                    transition: all 0.3s ease;
+                    max-width: 400px;
+                }
+                .notification.show {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                .notification-error {
+                    border-left: 4px solid #e53e3e;
+                }
+                .notification-info {
+                    border-left: 4px solid #3182ce;
+                }
+                .notification i {
+                    font-size: 1.2rem;
+                }
+                .notification-error i {
+                    color: #e53e3e;
+                }
+                .notification-info i {
+                    color: #3182ce;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+
+    function saveSettings() {
+        const settings = {
+            quality: currentQuality
+        };
+        localStorage.setItem('youtubeDownloaderSettings', JSON.stringify(settings));
+    }
+
+    function loadSettings() {
+        const saved = localStorage.getItem('youtubeDownloaderSettings');
+        if (saved) {
+            try {
+                const settings = JSON.parse(saved);
+                if (settings.quality) {
+                    setActiveQuality(settings.quality);
+                }
+            } catch (e) {
+                console.error('Failed to load settings:', e);
+            }
+        }
+    }
+});
