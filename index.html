@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube to MP4 - Single File Downloader</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-file-video"></i>
+                <h1>YouTube to MP4</h1>
+            </div>
+            <p class="tagline">Download videos as single MP4 files with audio included</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Download Section -->
+            <section class="download-section">
+                <div class="card">
+                    <h2><i class="fas fa-download"></i> Download YouTube as Single MP4</h2>
+                    <p class="subtitle">Paste any YouTube URL to get one MP4 file with audio+video combined</p>
+                    
+                    <!-- URL Input -->
+                    <div class="input-group">
+                        <div class="input-wrapper">
+                            <i class="fas fa-link"></i>
+                            <input type="text" id="urlInput" placeholder="Paste YouTube URL here...">
+                            <button id="pasteBtn" class="paste-btn">
+                                <i class="fas fa-paste"></i> Paste
+                            </button>
+                        </div>
+                        <div class="input-info">
+                            <span id="urlStatus">Enter a valid YouTube URL</span>
+                        </div>
+                    </div>
+
+                    <!-- Quality Selection -->
+                    <div class="quality-section">
+                        <h3><i class="fas fa-sliders-h"></i> Quality Options</h3>
+                        <div class="quality-grid">
+                            <div class="quality-option active" data-quality="720">
+                                <div class="quality-icon">
+                                    <i class="fas fa-hd"></i>
+                                </div>
+                                <div class="quality-info">
+                                    <span class="quality-name">720p HD</span>
+                                    <span class="quality-desc">Best balance</span>
+                                </div>
+                                <div class="quality-check">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="quality-option" data-quality="480">
+                                <div class="quality-icon">
+                                    <i class="fas fa-video"></i>
+                                </div>
+                                <div class="quality-info">
+                                    <span class="quality-name">480p</span>
+                                    <span class="quality-desc">Medium quality</span>
+                                </div>
+                                <div class="quality-check">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            
+                            <div class="quality-option" data-quality="best">
+                                <div class="quality-icon">
+                                    <i class="fas fa-crown"></i>
+                                </div>
+                                <div class="quality-info">
+                                    <span class="quality-name">Best Available</span>
+                                    <span class="quality-desc">Highest quality</span>
+                                </div>
+                                <div class="quality-check">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Download Button -->
+                    <button id="downloadBtn" class="download-btn">
+                        <i class="fas fa-cloud-download-alt"></i>
+                        <span>Download as Single MP4</span>
+                    </button>
+
+                    <!-- Progress Section -->
+                    <div id="progressSection" class="progress-section" style="display: none;">
+                        <h3><i class="fas fa-spinner fa-spin"></i> Processing Download</h3>
+                        
+                        <div class="progress-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="progress-text" id="progressText">0%</div>
+                        </div>
+
+                        <div class="progress-details">
+                            <div class="detail-item">
+                                <i class="fas fa-info-circle"></i>
+                                <span id="statusText">Initializing...</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-tachometer-alt"></i>
+                                <span id="speedText">Speed: --</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-clock"></i>
+                                <span id="etaText">ETA: --</span>
+                            </div>
+                        </div>
+
+                        <button id="cancelBtn" class="cancel-btn">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Result Section -->
+            <section id="resultSection" class="result-section" style="display: none;">
+                <div class="card success-card">
+                    <div class="success-header">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Download Ready!</h3>
+                    </div>
+                    <div class="success-content">
+                        <p id="resultMessage">Your video has been converted to a single MP4 file.</p>
+                        <div class="download-actions">
+                            <a id="downloadLink" class="download-action-btn" download>
+                                <i class="fas fa-download"></i>
+                                <span>Download MP4 File</span>
+                            </a>
+                            <button id="newDownloadBtn" class="secondary-btn">
+                                <i class="fas fa-redo"></i>
+                                <span>New Download</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Info Section -->
+            <section class="info-section">
+                <div class="card">
+                    <h2><i class="fas fa-info-circle"></i> How It Works</h2>
+                    <div class="steps">
+                        <div class="step">
+                            <div class="step-number">1</div>
+                            <div class="step-content">
+                                <h4>Paste URL</h4>
+                                <p>Copy any YouTube video URL and paste it above</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">2</div>
+                            <div class="step-content">
+                                <h4>Select Quality</h4>
+                                <p>Choose 720p, 480p, or best available quality</p>
+                            </div>
+                        </div>
+                        <div class="step">
+                            <div class="step-number">3</div>
+                            <div class="step-content">
+                                <h4>Download</h4>
+                                <p>Get a single MP4 file with audio+video combined</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="features">
+                        <h3><i class="fas fa-star"></i> Features</h3>
+                        <ul>
+                            <li><i class="fas fa-check"></i> Single MP4 file (no separate audio/video)</li>
+                            <li><i class="fas fa-check"></i> Audio+video combined automatically</li>
+                            <li><i class="fas fa-check"></i> Multiple quality options</li>
+                            <li><i class="fas fa-check"></i> Fast downloads</li>
+                            <li><i class="fas fa-check"></i> No software installation needed</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-info">
+                    <h3>YouTube to MP4</h3>
+                    <p>Download YouTube videos as single MP4 files with audio included</p>
+                </div>
+                <div class="footer-links">
+                    <a href="#" id="faqBtn"><i class="fas fa-question-circle"></i> FAQ</a>
+                    <a href="#" id="contactBtn"><i class="fas fa-envelope"></i> Contact</a>
+                    <a href="#" id="privacyBtn"><i class="fas fa-shield-alt"></i> Privacy</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 YouTube to MP4. For educational purposes only.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- FAQ Modal -->
+    <div id="faqModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+            <div class="faq-content">
+                <div class="faq-item">
+                    <h3>Is this service free?</h3>
+                    <p>Yes, completely free with no registration required.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Do I get one MP4 file or two files?</h3>
+                    <p>You get ONE MP4 file with audio and video combined. No separate files.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>What video qualities are available?</h3>
+                    <p>720p, 480p, and the best available quality for the video.</p>
+                </div>
+                <div class="faq-item">
+                    <h3>Is there a file size limit?</h3>
+                    <p>No, but larger videos will take longer to process.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
